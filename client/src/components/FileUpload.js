@@ -9,6 +9,7 @@ function FileUpload() {
     const [uploadedFile, setUploadedFile] = useState({})
     const [message, setMessage] = useState()
     const [uploadPercentage, setUploadPercentage] = useState(0)
+
     const onChange = (e) => {
         setFile(e.target.files[0]);
         setFileName(e.target.files[0].name)
@@ -19,20 +20,21 @@ function FileUpload() {
         console.log(formData);
         formData.append('file', file);
         try {
-            const res = await axios.post('/upload', formData, {
+            const res = await axios.post('http://localhost:5000/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 },
                 onUploadProgress: ProgressEvent => {
-                    setUploadPercentage(parseInt(Math.round((ProgressEvent.loaded * 100) / ProgressEvent.total)))
-                    //clear percentage
-                    setTimeout(() => setUploadPercentage(0), 10000);
+                    setUploadPercentage(parseInt(
+                        Math.round((ProgressEvent.loaded * 100) / ProgressEvent.total)
+                    ))
                 }
 
             }) //since we have added the proxy in react package.json, we ca durectly use /upload and no need  to add localhost:500/upload
+            setTimeout(() => setUploadPercentage(0), 10000);
             const { fileName, filePath } = res.data;
             setUploadedFile({ fileName, filePath })
-            setMessage('file u[ploaded')
+            setMessage('file uploaded')
         }
         catch (err) {
             if (err.response.status === 500) {
