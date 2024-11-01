@@ -37,10 +37,12 @@ function FileUpload() {
             setMessage('file uploaded')
         }
         catch (err) {
+            console.log("error object: " + err);
             if (err.response.status === 500) {
                 setMessage("there was a problem with the server")
             }
             else {
+                console.log("not a server error: " + err.response.data);
                 setMessage(err.response.data.msg)
             }
         }
